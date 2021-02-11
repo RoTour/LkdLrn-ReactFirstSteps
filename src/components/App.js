@@ -5,22 +5,27 @@ import { NavBar } from "./NavBar";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { AddTask } from "./AddTask";
 import { initialData } from "../initialData";
+import { Fetching } from "./Fetching";
 import uniqid from "uniqid";
 
 export class App extends React.Component {
   state = {
-    tasks: initialData,
+    tasks: [],
+    fetching: true,
   };
 
-  onToggleCompleted = (taskId) => {
-    // let taskToUpdate = this.state.tasks.find((it) => it.id === taskId);
-    // taskToUpdate.completed = !taskToUpdate.completed;
+  componentDidMount = () => {
+    const delay = Math.floor(Math.random() * 5000);
 
-    // this.setState(prevState => (
-    //   prevState.tasks.map(task => {
-    //     return task.id === taskId ? taskToUpdate : task;
-    //   })
-    // ))
+    setTimeout(() =>{
+      this.setState({
+        fetching: false,
+        tasks: initialData,
+      })
+    }, delay)
+  }
+
+  onToggleCompleted = (taskId) => {
     this.state.tasks.find(
       (it) => it.id === taskId
     ).completed = !this.state.tasks.find((it) => it.id === taskId).completed;
@@ -51,6 +56,7 @@ export class App extends React.Component {
   render() {
     return (
       <section id="todo">
+        {this.state.fetching ? <Fetching /> : null}
         <BrowserRouter>
           <Switch>
             <Route
@@ -70,7 +76,7 @@ export class App extends React.Component {
               )}
             />
           </Switch>
-          <NavBar onDeleteCompleted={this.onDeleteCompleted}/>
+          <NavBar onDeleteCompleted={this.onDeleteCompleted} />
         </BrowserRouter>
       </section>
     );
